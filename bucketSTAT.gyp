@@ -6,15 +6,38 @@ import subprocess   #Module to spawn processes and gather I/O
 supportedMACOS = 'Darwin'       #Foundation for later ability to code to specifc OS
 supportedLINUX = 'Linux'        #Foundation for later ability to code to specifc OS
 supportedawsCLI = 'aws-cli/'    #Foundation for later ability to code to specifc AWS CLI version
-supportedPYTHON = '3'           #Foundation for later ability to code to specific Python version
+supportedPYTHON = '3.'          #Foundation for later ability to code to specific Python version
+supportedBOTO = 'boto3'         #Foundation for later ability to code to specif Boto version
 abortDEFAULT = 'Y'              #Foundation for ability to abort
+riskyPYTHON = False             #Indicator if Python version is a risk to reliable execution
+riskyOS = False                 #Indicator if OS is a risk to reliable execution
+riskyawsCLI = False             #Indicator if AWS CLI is a risk to reliable execution
+riskyBOTO = False               #Indicator if Boto is a risk to reliable execution
+missingPKG = 'not found:'       #Comparison for missing package names
 
 #Checing prerequisites
-def checkPKG(package):  #Check if pip package 'package' is installed
-    return subprocess.check_call([sys.executable, '-m','pip','list','|', 'grep',package])
+def checkPKG(package):  #Check if pip package 'package' is installed (EXACT MATCH)
+    if package is supportedBOTO:
+        result = subprocess.check_call([sys.executable, '-m','pip','show',package])
+        if missingPKG in result:
+            return False
+    elif package in supportedBOTO:
+        result = subprocess.check_call([sys.executable, '-m','pip','show',package])
+        if missingPKG in result:
+            return False
+    else:
+        result = subprocess.check_call([sys.executable, '-m','pip','show',package])
+        if missingPKG in result:
+            return False
+        return 
  
 def checkcliAWS():  #Check if AWS cli is installed
-    return subprocess.check_call(['aws','--version'])
+    subprocess.check_call(['aws','--version'])
+    if supportedawsCLI in awscliInstalled:
+        print(f'AWS CLI version {awscliInstalled} is supported!')
+        return True
+    else:
+        return False
 
 def unsupported(issue): #Advise user that unsupported version may not have reliable results
     print(f'{issue} is NOT formally supported but may work...')
@@ -25,7 +48,7 @@ def unsupported(issue): #Advise user that unsupported version may not have relia
         print('Aborting...')
         exit()
     elif abort is 'N':
-        return
+        return True
     else:
         print('Invalid input...')
         print('Aborting...')
@@ -36,16 +59,22 @@ def checkReq(): #Check operating environment compatibility
     callingOS = platform.system()
     pyArch = platform.python_version()
     awscliInstalled = checkcliAWS()
+    botoInstalled = checkPKG(boto)
     if supportedMACOS in callingOS:
         print(f'{callingOS} is supported!')
     elif supportedLINUX in callingOS:
         print(f'{callingOS} is supported!')
     else:
-        unsupported(callingOS)
+        riskyOS = unsupported(callingOS)
     if supportedPYTHON in pyArch:
         print(f'Python version {pyArch} is supported!')
     else:
-        unsupported(pyArch)
+        riskyPYTHON = unsupported(pyArch)
+   
+    if supportedBOTO in botoInstalled
+    
+    
+
 
     
     
@@ -56,7 +85,7 @@ try:
     awscliInstalled = checkcliAWS
 except expression as identifier:
     pass
-botoInstalled = checkPKG(boto)
+
 if botoInstalled is True:
     if 3 in botoInstalled:
         boto3Installed = True #Placeholder for future need to insure Boto3 is installed
