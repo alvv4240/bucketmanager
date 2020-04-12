@@ -14,6 +14,8 @@ riskyOS = False                 #Indicator if OS is a risk to reliable execution
 riskyawsCLI = False             #Indicator if AWS CLI is a risk to reliable execution
 riskyBOTO = False               #Indicator if Boto is a risk to reliable execution
 missingPKG = 'not found:'       #Comparison for missing package names
+awscliInstalled = False         #Indicator if installation should be proposed to user
+botoInstalled = False           #Indicator if installation should be proposed to user
 
 #Checing prerequisites
 def checkPKG(package):  #Check if pip package 'package' is installed (EXACT MATCH)
@@ -70,8 +72,12 @@ def checkReq(): #Check operating environment compatibility
         print(f'Python version {pyArch} is supported!')
     else:
         riskyPYTHON = unsupported(pyArch)
-   
-    if supportedBOTO in botoInstalled
+    if supportedBOTO in botoInstalled:
+        botoInstalled = True
+   if supportedawsCLI in awscliInstalled:
+        awscliInstalled = True
+        
+        
     
     
 
