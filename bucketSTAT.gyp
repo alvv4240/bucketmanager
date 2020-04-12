@@ -3,9 +3,10 @@ import platform #Module to get Operating System platform info
 import sys      #Module to access underlying interpreters
 import subprocess   #Module to spawn processes and gather I/O
 
-supportedMACOS = 'Darwin'       #Foundation for later ability to code to specifc OS
-supportedLINUX = 'Linux'        #Foundation for later ability to code to specifc OS
-supportedawsCLI = 'aws-cli/'    #Foundation for later ability to code to specifc AWS CLI version
+supportedMACOS = 'Darwin'       #Foundation for later ability to code to specific OS
+supportedLINUX = 'Linux'        #Foundation for later ability to code to specific OS
+supportedawsCLI = 'aws-cli/'    #Foundation for later ability to code to specific AWS CLI version
+supportedazCLI = 'az'           #Foundation for later ability to code to specific Azure CLI version
 supportedPYTHON = '3.'          #Foundation for later ability to code to specific Python version
 supportedBOTO = 'boto3'         #Foundation for later ability to code to specif Boto version
 abortDEFAULT = 'Y'              #Foundation for ability to abort
@@ -77,9 +78,20 @@ def checkReq(): #Check operating environment compatibility
    if supportedawsCLI in awscliInstalled:
         awscliInstalled = True
         
+#Installing dependencies
+def installPKG(package): #Function to install missing Python packages/modules
+    result = subprocess.check_call([sys.executable, '-m','pip','install',package])
+    if checkPKG(boto3):
+        print(f'Great news! {package} is installed and ready!')
+        return True
+    else:
+        print(f'{package} installation failed. Please run the below command manually to get further insight')
+        print(f'python3 -m pip install {package}')
+        return False
         
-    
-    
+if botoInstalled == False:
+    botoInstalled = installPKG(boto3)
+   
 
 
     
