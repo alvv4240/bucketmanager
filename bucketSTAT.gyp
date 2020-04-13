@@ -2,6 +2,7 @@ import os       #Module to interact with Filesystem
 import platform #Module to get Operating System platform info
 import sys      #Module to access underlying interpreters
 import subprocess   #Module to spawn processes and gather I/O
+import boto3    #Boto3 module
 
 supportedMACOS = 'Darwin'       #Foundation for later ability to code to specific OS
 supportedLINUX = 'Linux'        #Foundation for later ability to code to specific OS
@@ -73,13 +74,14 @@ def checkReq(): #Check operating environment compatibility
         print(f'Python version {pyArch} is supported!')
     else:
         riskyPYTHON = unsupported(pyArch)
-    if supportedBOTO in botoInstalled:
+   if supportedBOTO in botoInstalled:
         botoInstalled = True
    if supportedawsCLI in awscliInstalled:
         awscliInstalled = True
         
 #Installing dependencies
 def installPKG(package): #Function to install missing Python packages/modules
+    print(f'This will install {package} to your user and not the system. Please consult with your admin for system wide installation.')
     result = subprocess.check_call([sys.executable, '-m','pip','install',package])
     if checkPKG(boto3):
         print(f'Great news! {package} is installed and ready!')
@@ -88,17 +90,57 @@ def installPKG(package): #Function to install missing Python packages/modules
         print(f'{package} installation failed. Please run the below command manually to get further insight')
         print(f'python3 -m pip install {package}')
         return False
-        
-if botoInstalled == False:
-    botoInstalled = installPKG(boto3)
-   
 
-
-    
+def useBOTO3():
+    profiles = boto3.session.available_profiles()
     
 
+    if skipREQS is True:
+    print('Skipping prerequisite checks...')
+else:
+   checkREQ(): 
+   print('Your system looks good.')
 
-
+print('This script supports boto3 and AWS CLI')
+if botoInstalled is True and awscliInstalled is True:
+    print('Boto3 and AWS CLI are installed.')
+    choice = input('Please indicate if you want to use B)oto3 or A)WS CLI: ')
+    choice = choice.upper()
+    if choice is 'B':
+        useBOTO()
+    elif choice is 'A':
+        useAWSCLI()
+    else:
+        print('Invalid input. Please run script again...')
+        exit()
+elif botoInstalled is False and awscliInstalled is True:
+    print('AWS CLI is installed but Boto3 is not.')
+    choice = input('Please indicate if you want to install B)oto3 or use A)WS CLI: ')
+    choice = choice.upper()
+    if choice is 'B':
+        botoInstalled = installPKG(boto3)
+        useBOTO()
+    elif choice is 'A':
+        useAWSCLI()
+    else:
+        print('Invalid input. Please run script again...')
+        exit()
+elif botoInstalled is False and awscliInstalled is False:
+    print('Boto3 and AWS CLI are not installed.')
+    choice = input('Please indicate if you want to install B)oto3: ')
+    choice = choice.upper()
+    if choice is 'B':
+        botoInstalled = installPKG(boto3)
+        useBOTO()
+    else:
+        print('Invalid input. Please run script again...')
+        exit()
+elif botoInstalled is True and awscliInstalled is False:
+    print('Boto3 is installed but AWS is not. So, let''s move forward with Boto3.')
+else:
+    print('Something didn''t go well with the prerequisite checks so implementation choices are ambiguous.')
+    print('Aborting script for opportunity investigate issue with Boto3 and AWS CLI.')
+    exit()
 try:
     awscliInstalled = checkcliAWS
 except expression as identifier:
