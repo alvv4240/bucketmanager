@@ -1,10 +1,10 @@
 import os       #Module to interact with Filesystem
 import platform #Module to get Operating System platform info
 import sys      #Module to access underlying interpreters
-import subprocess   #Module to spawn processes and gather I/O
-import json
-import math
-from datetime import datetime, timezone
+import subprocess#Module to spawn processes
+import json     #Module to injest/process json response
+import math     #Module to support file size math
+from datetime import datetime, timezone #Module to support date time fucntions
 
 supportedMACOS = 'Darwin'       #Foundation for later ability to code to specific OS
 supportedLINUX = 'Linux'        #Foundation for later ability to code to specific OS
@@ -12,7 +12,7 @@ supportedawsCLI = 'aws-cli/'    #Foundation for later ability to code to specifi
 supportedazCLI = 'az'           #Foundation for later ability to code to specific Azure CLI version
 supportedPYTHON = '3.'          #Foundation for later ability to code to specific Python version
 supportedBOTO = 'boto3'         #Foundation for later ability to code to specif Boto version
-targetBOTO = 'boto3'            #Foundation for later ability to validate version requirements
+targetBOTO = 'boto3'            #Foundation for later ability to identify target version requirements
 check = "b\'\'"                 #Easier comparisons
 abortDEFAULT = 'Y'              #Foundation for ability to abort
 skipREQS = False                #Defualt to run prerequisite checks
@@ -23,7 +23,7 @@ riskyBOTO = False               #Indicator if Boto is a risk to reliable executi
 missingPKG = 'not found:'       #Comparison for missing package names
 awscliInstalled = False         #Indicator if installation should be proposed to user
 botoInstalled = False           #Indicator if installation should be proposed to user
-scale = 3                       #Indicator of file size reporting scale
+scale = 3                       #Indicator of file size reporting scale with a default to MB
 
 #Checing prerequisites
 def checkPKG(package):  #Check if pip package 'package' is installed (EXACT MATCH)
@@ -52,6 +52,7 @@ def checkcliAWS():  #Check if AWS cli is installed
     else:
         return False
 
+#Sec
 def unsupported(issue): #Advise user that unsupported version may not have reliable results
     print(f'{issue} is NOT formally supported but may work...')
     abort = input('Do you wish to abort? [Y\n]')
@@ -238,8 +239,15 @@ elif botoInstalled is False and awscliInstalled is False:
         print('Invalid input. Please run script again...')
         exit(0)
 elif botoInstalled is True and awscliInstalled is False:
-    print(f"{targetBOTO} is installed but AWS is not. So, let's move forward with {targetBOTO}.")
-    useBOTO3(scale)
+    print(f"{targetBOTO} is installed but AWS is not.")
+    choice = input("Please indicate to move forward with B)oto3.")
+    choice = choice.upper()
+    if choice == 'B':
+        botoInstalled = installPKG(targetBOTO)
+        useBOTO3(scale)
+    else:
+        print('Invalid input. Please run script again...')
+        exit(0)
 else:
     print("Something didn't go well with the prerequisite checks so implementation choices are ambiguous.")
     print('Aborting script for opportunity investigate issue with Boto3 and AWS CLI.')
