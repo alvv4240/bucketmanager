@@ -1,8 +1,13 @@
 # buckets
-Python tool(s) to help simplify cloud storage. Currently targets AWS S3. I'll look to add Azure & GCP.
+Python tool(s) to help simplify managing cloud storage. These tools will be able to be used in the same way to deliver the same functionality for any supported cloud.
 
-bucketSTAT.gyp
-Python(3) script that will use an existing installation of AWS CLI or offer to install Boto3 to the user.
+## bucketSTAT.gyp
+#### Installation:
+Running the script will prompt if a Boto3 installation is needed
+#### Usage:
+python3 bucketSTAT.gyp
+#### Description:
+Currently targets AWS S3. I'll look to add Azure & GCP. This python3 script that will use an existing installation of AWS CLI or offer to install Boto3 to the user.
 
 It is a response to a challenge to deliver on the following items:
 - Bucket name
@@ -21,3 +26,8 @@ Next updates will be targeted to do the following:
 Future updates will target the same functionality to:
 - Azure
 - Google Cloud
+
+#### Credits:
+Pending
+#### License:
+All rights reserved/pending
