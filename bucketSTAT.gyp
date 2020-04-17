@@ -39,7 +39,7 @@ def checkPKG(package):  #Check if pip package 'package' is installed (EXACT MATC
     else:
         return False
  
-def checkcliAWS():  #Check if AWS cli is installed
+def checkcliAWS():  #Check if AWS CLI is installed
     checkawscliInstalled = subprocess.run(['aws','--version'],capture_output=True)
     temp = checkawscliInstalled.stdout
     temp = str(temp)
@@ -99,17 +99,20 @@ def chooseSCALE():
     choice = choice.upper()
     if choice == 'Q':
         exit(0)
-    elif choice.isnumeric:
+    elif choice.isnumeric():
         choice = int(choice)
         choice -= 1
-        if choice in range(10): 
+        if choice in range(10) and choice >= 0: 
+            return choice
+        else:
+            choice = -1
             return choice
     else:
         choice = -1
         return choice
 
 #Supporting functions
-def seedDict (buckets):
+def seedDict (buckets):     #Adds needed keys
     for bucket in buckets:
         bucket.update({'filesTotSize' : 0})
         bucket.update({'filesMRDatetime': datetime(1,1,1,hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc)})
@@ -117,7 +120,7 @@ def seedDict (buckets):
         bucket.update({'filesCount': 0})
     return buckets
 
-def convert_size(size_bytes,scale=3):
+def convert_size(size_bytes,scale=3):   #Performs file size math based upon user choice
    if size_bytes == 0:
        return "0B"
    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
@@ -204,6 +207,9 @@ if scale == -1:
     print('Invalid input provided.')
     print('Please try once more.')
     scale = chooseSCALE()
+    if scale == -1:
+        print('Invalid input. Please run script again...')
+        exit(0)
 if botoInstalled is True and awscliInstalled is True:
     print(f'{targetBOTO} and AWS CLI are installed.')
     choice = input('Please indicate if you want to use B)oto or A)WS CLI: ')
@@ -240,10 +246,9 @@ elif botoInstalled is False and awscliInstalled is False:
         exit(0)
 elif botoInstalled is True and awscliInstalled is False:
     print(f"{targetBOTO} is installed but AWS is not.")
-    choice = input("Please indicate to move forward with B)oto3.")
+    choice = input("Please confirm to move forward with using B)oto3: ")
     choice = choice.upper()
     if choice == 'B':
-        botoInstalled = installPKG(targetBOTO)
         useBOTO3(scale)
     else:
         print('Invalid input. Please run script again...')
