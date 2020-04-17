@@ -15,7 +15,7 @@ supportedBOTO = 'boto3'         #Foundation for later ability to code to specif 
 targetBOTO = 'boto3'            #Foundation for later ability to identify target version requirements
 check = "b\'\'"                 #Easier comparisons
 abortDEFAULT = 'Y'              #Foundation for ability to abort
-skipREQS = False                #Defualt to run prerequisite checks
+skipREQS = False                #Defualt to run prerequisite checks and will be part of CLI options/arguments
 riskyPYTHON = False             #Indicator if Python version is a risk to reliable execution
 riskyOS = False                 #Indicator if OS is a risk to reliable execution
 riskyawsCLI = False             #Indicator if AWS CLI is a risk to reliable execution
@@ -39,7 +39,7 @@ def checkPKG(package):  #Check if pip package 'package' is installed (EXACT MATC
     else:
         return False
  
-def checkcliAWS():  #Check if AWS CLI is installed
+def checkcliAWS():  #Check if AWS cli is installed
     checkawscliInstalled = subprocess.run(['aws','--version'],capture_output=True)
     temp = checkawscliInstalled.stdout
     temp = str(temp)
@@ -52,7 +52,7 @@ def checkcliAWS():  #Check if AWS CLI is installed
     else:
         return False
 
-#Sec
+#Handling risk or unsupported configurations
 def unsupported(issue): #Advise user that unsupported version may not have reliable results
     print(f'{issue} is NOT formally supported but may work...')
     abort = input('Do you wish to abort? [Y\n]')
@@ -94,7 +94,7 @@ def chooseSCALE():
     8) ZB
     9) YB
     Q) Quit
-     """
+    Enter choice: """
     choice = input(choicePROMPT)
     choice = choice.upper()
     if choice == 'Q':
@@ -112,7 +112,7 @@ def chooseSCALE():
         return choice
 
 #Supporting functions
-def seedDict (buckets):     #Adds needed keys
+def seedDict (buckets):     #Adds needed keys for reporting
     for bucket in buckets:
         bucket.update({'filesTotSize' : 0})
         bucket.update({'filesMRDatetime': datetime(1,1,1,hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc)})
@@ -129,7 +129,7 @@ def convert_size(size_bytes,scale=3):   #Performs file size math based upon user
    return "%s %s" % (s, size_name[scale])
 
 #Implementation of stat gathering
-def useBOTO3(scale):
+def useBOTO3(scale):        #Implemented using Boto3 with 'scale' for the reporting file size
     import boto3    #Boto3 module
     client = boto3.client('s3')
     resultsBUCKETS = client.list_buckets()
@@ -155,7 +155,7 @@ def useBOTO3(scale):
         print(f"Bucket\'s Total Size of All Files: {convert_size(bucket.get('filesTotSize'),scale)}")
         print(f"Bucket\'s Total Number of Files: {bucket.get('filesCount')}\n")
 
-def useAWSCLI(scale):
+def useAWSCLI(scale):       #Implemented using AWS CLI with 'scale' for the reporting file size
     resultsBUCKETS = subprocess.check_output(['aws', 's3api','list-buckets'])
     resultsBUCKETS = json.loads(resultsBUCKETS)
     buckets = resultsBUCKETS.get('Buckets')
