@@ -128,6 +128,11 @@ def convert_size(size_bytes,scale=3):   #Performs file size math based upon user
    s = round(size_bytes / p, 2)
    return "%s %s" % (s, size_name[scale])
 
+def configBOTO():
+    #open ~/.boto
+    #provide guidance about how to config it
+    return
+
 #Implementation of stat gathering
 def useBOTO3(scale):        #Implemented using Boto3 with 'scale' for the reporting file size
     import boto3    #Boto3 module
@@ -240,6 +245,7 @@ elif botoInstalled is False and awscliInstalled is False:
     choice = choice.upper()
     if choice == 'B':
         botoInstalled = installPKG(targetBOTO)
+        configBOTO()
         useBOTO3(scale)
     else:
         print('Invalid input. Please run script again...')
