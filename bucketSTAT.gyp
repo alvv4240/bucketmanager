@@ -129,7 +129,13 @@ def convert_size(size_bytes,scale=3):   #Performs file size math based upon user
    return "%s %s" % (s, size_name[scale])
 
 def configBOTO():
-    #open ~/.boto
+    #try:
+    #   print('A new installation of Boto without AWS CLI needs to have AWS keys configure')
+    #   print('This script currently only supports the first/default set.')
+    #   subprocess.run(['vim', '~/.boto')
+    # except error opening file:
+        
+        
     #provide guidance about how to config it
     return
 
