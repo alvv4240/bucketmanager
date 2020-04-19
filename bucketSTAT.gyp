@@ -20,6 +20,7 @@ riskyPYTHON = False             #Indicator if Python version is a risk to reliab
 riskyOS = False                 #Indicator if OS is a risk to reliable execution
 riskyawsCLI = False             #Indicator if AWS CLI is a risk to reliable execution
 riskyBOTO = False               #Indicator if Boto is a risk to reliable execution
+botoconfigFILE = '.boto'        #Defualt AWS credentials file, if needed
 missingPKG = 'not found:'       #Comparison for missing package names
 awscliInstalled = False         #Indicator if installation should be proposed to user
 botoInstalled = False           #Indicator if installation should be proposed to user
@@ -128,16 +129,18 @@ def convert_size(size_bytes,scale=3):   #Performs file size math based upon user
    s = round(size_bytes / p, 2)
    return "%s %s" % (s, size_name[scale])
 
-def configBOTO():
-    #try:
-    #   print('A new installation of Boto without AWS CLI needs to have AWS keys configure')
-    #   print('This script currently only supports the first/default set.')
-    #   subprocess.run(['vim', '~/.boto')
-    # except error opening file:
-        
-        
-    #provide guidance about how to config it
-    return
+def configBOTO():   #Creates initial credentials file and provides user instruction
+    botoconfigDEFAULT ="""[Credentials]
+aws_access_key_id = foo
+aws_secret_access_key = bar
+"""                             #Default AWS credential configuration, if needed
+    print('A new installation of Boto without AWS CLI needs to have AWS keys configure')
+    print('This script will create a default config file.')
+    print('Please update .boto with your credentials then move it to your home dir.')
+    print('When the above is complete, please rerun this script. Thanks!')
+    with open(botoconfigFILE, 'w') as output:
+        output.write(botoconfigDEFAULT)
+    exit(0)
 
 #Implementation of stat gathering
 def useBOTO3(scale):        #Implemented using Boto3 with 'scale' for the reporting file size
@@ -252,7 +255,6 @@ elif botoInstalled is False and awscliInstalled is False:
     if choice == 'B':
         botoInstalled = installPKG(targetBOTO)
         configBOTO()
-        useBOTO3(scale)
     else:
         print('Invalid input. Please run script again...')
         exit(0)
