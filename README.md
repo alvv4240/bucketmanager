@@ -4,8 +4,14 @@ Python tool(s) to help simplify managing cloud storage. These tools will be able
 Amazon Boto3 documentation: https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
 
 ## bucketSTAT.gyp
-#### Installation:
-Running the script will prompt if a Boto3 installation is needed
+#### __Installation:__
+Running the script will prompt if a Boto3 installation is needed. If AWS CLI is not installed and Boto3 is chosen to be installed, the script will provide guidance to update ~/.boto.
+##### __Example:__
+```
+[Credentials]
+aws_access_key_id = foo
+aws_secret_access_key = bar
+```
 #### Usage:
 ```
 python3 bucketSTAT.gyp
